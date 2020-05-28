@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5px"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="?android:attr/selectableItemBackground"
+        >
+
+        <ImageView
+            android:layout_width="20dp"
+            android:id="@+id/imgCallType"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="25px"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/incomingcall"></ImageView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@id/lnRight"
+            android:layout_toRightOf="@+id/imgCallType"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txtContactName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Caller Name"
+                android:textSize="16dp"
+                android:layout_weight="1"
+                android:textStyle="bold"></TextView>
+            <TextView
+                android:id="@+id/txtCallDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12dp"
+                android:text="Caller Duration"></TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnRight"
+            android:layout_width="50dp"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_delete_black"></ImageView>
+            <TextView
+                android:id="@+id/txtDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:layout_weight="1"
+                android:text="00:00:00">
+
+            </TextView>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

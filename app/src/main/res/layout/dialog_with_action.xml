@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="260dp"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llcontent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/greet_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primaryText"
+            android:textSize="@dimen/larger_font"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/explanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint=""
+            android:maxLines="100" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llcontent"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:layout_marginBottom="@dimen/margin_10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/okay"
+            android:layout_marginRight="@dimen/margin_24dp"
+            android:padding="@dimen/margin_10dp"
+            android:layout_gravity="left|center_vertical"
+
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/theme_blue_color"
+            android:textSize="@dimen/size_16sp" />
+
+        <Button
+            android:id="@+id/okay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_10dp"
+
+            android:textAllCaps="false"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right|center_vertical"
+            android:gravity="center_horizontal|center_vertical"
+            android:padding="@dimen/margin_10dp"
+            android:text="@string/ok"
+            android:textColor="@color/theme_color"
+            android:textSize="@dimen/size_16sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

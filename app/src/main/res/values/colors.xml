@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!--    <color name="colorPrimary">#ff33b5e5</color>
+        <color name="colorPrimaryDark">#ff0099cc</color>
+        <color name="colorAccent">#FF4081</color>-->
+
+    <color name="colorPrimary">#E53935</color>
+    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="colorAccent">#E53935</color>
+    <!--<color name="colorAccent">#321b50</color>-->
+
+    <color name="white">#ffffff</color>
+    <color name="login_theme">#44000000</color>
+    <color name="theme_color">#D82128</color>
+    <color name="theme_blue_color">#321b50</color>
+
+    <color name="header_color_optional">#ffca28</color>
+    <color name="header">#6e6f71</color>
+    <color name="options">#919191</color>
+    <color name="charcoal_grey">#414042</color>
+    <color name="options_lighter">#77919191</color>
+
+    <color name="colorPrimary_j">#3c3b5c</color>
+    <!--Text color below-->
+    <color name="primaryText">#424242</color>
+    <color name="subHeaderText">#727272</color>
+
+    <color name="light_yellow">#ccFFF8C7</color>
+    <color name="light_background">#f6f6f6</color>
+    <color name="light_red">#60E53935</color>
+    <color name="partial_blue">#60321b50</color>
+    <color name="partial_black">#60000000</color>
+    <color name="blue">#4a90e2</color>
+    <color name="AccentBlue">#4a90e2</color>
+    <color name="green">#417505</color>
+    <color name="light_green">#c2eb93</color>
+    <color name="orange">#d79806</color>
+    <color name="dark_gray">#4a4a4a</color>
+    <color name="red">#d0021b</color>
+    <color name="tab_completed">#4a4a4a</color>
+
+
+
+    <!--<color name="colorPrimary_j">#3c3b5c</color>-->
+    <!--<color name="multi_btn_selected_state">#d0021b</color>-->
+    <!--<color name="multi_btn_normal_state">#dadada</color>-->
+
+
+
+
+    <color name="bidding_bg">#282828</color>
+</resources>

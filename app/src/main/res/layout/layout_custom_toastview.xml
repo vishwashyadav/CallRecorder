@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/toast_background"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp">-->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/cardview_dark_background"
+    app:contentPaddingLeft="10dp"
+    app:contentPaddingRight="10dp"
+    app:contentPaddingBottom="5dp"
+    app:contentPaddingTop="5dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <TextView
+        android:id="@+id/tvToast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="15sp"
+         />
+
+</android.support.v7.widget.CardView>
+
+
+    <!--</LinearLayout>-->

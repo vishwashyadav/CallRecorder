@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Phone Call Recorder</string>
+
+    <string name="something_went_wrong">something_went_wrong</string>
+
+    <string name="hint_enter_username">Username</string>
+    <string name="hint_enter_password">Password</string>
+    <string name="hint_enter_contact_number">Contact Number</string>
+    <string name="login">Login</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+
+</resources>

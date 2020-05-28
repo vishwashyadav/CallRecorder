@@ -1,0 +1,59 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="design_navigation_icon_size" tools:override="true">14dp</dimen>
+    <dimen name="activity_horizontal_margin_large">32dp</dimen>
+    <dimen name="activity_vertical_margin_small">8dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin_large">32dp</dimen>
+    <dimen name="login_margin">20dp</dimen>
+    <dimen name="std_elevation">6dp</dimen>
+
+    <dimen name="form_textview_padding">10dp</dimen>
+    <dimen name="form_textview_margin_top">10dp</dimen>
+    <dimen name="form_textview_margin_bottom">16dp</dimen>
+    <dimen name="header_padding">30dp</dimen>
+
+    <dimen name="listview_inline_margin">10dp</dimen>
+    <dimen name="list_view_margin">20dp</dimen>
+    <dimen name="dimen_rating_circle">50dp</dimen>
+    <dimen name="dimen_arrow">32dp</dimen>
+    <dimen name="dimen_icon_type">40dp</dimen>
+    <dimen name="dimen_arrow_right">10dp</dimen>
+
+    <dimen name="small_font">14sp</dimen>
+    <dimen name="regular_font">16sp</dimen>
+    <dimen name="larger_font">18sp</dimen>
+
+    <dimen name="rating_horizontal">18dp</dimen>
+    <dimen name="rating_vertical">10dp</dimen>
+    <dimen name="form_header_text_size">20sp</dimen>
+    <dimen name="form_secondary_header_text_size">18sp</dimen>
+
+    <dimen name="notificaion_height">250dp</dimen>
+    <dimen name="std_margin">5dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="bottom_button_height">48dp</dimen>
+    <dimen name="form_edittext_std_height">60dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">100dp</dimen>
+    <dimen name="input_sp_min_height">45dp</dimen>
+    <dimen name="reg_edittext_height">45dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
+    <dimen name="margin_16dp">16dp</dimen>
+    <dimen name="margin_24dp">24dp</dimen>
+
+    <dimen name="size_14sp">14sp</dimen>
+    <dimen name="size_12sp">12sp</dimen>
+    <dimen name="size_16sp">16sp</dimen>
+    <dimen name="size_18sp">18sp</dimen>
+    <dimen name="size_11sp">11sp</dimen>
+    <dimen name="size_15sp">15sp</dimen>
+    <dimen name="size_20sp">20sp</dimen>
+</resources>
