@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Utils {
-
+//Commited to git
     companion object {
 
         private var pDialog: ProgressDialog? = null
