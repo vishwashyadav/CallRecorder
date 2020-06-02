@@ -2,8 +2,10 @@
 package com.callrecorder;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.callrecorder.adapter.DashboardListAdapter;
 import com.callrecorder.bean.CallDetailsListResponseBean;
@@ -46,26 +49,66 @@ public class MainActivity extends AppCompatActivity {
     DashboardListAdapter rAdapter;
     RecyclerView recycler;
     boolean checkResume = false;
+    Context context;
 CallHelper helper;
 
     private WebServiceProvider apiProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PreferenceManager pref = PreferenceManager.instance(this);
         pref.set(PreferenceManager.numOfCalls, 0);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this));
-
+        context = this;
         findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatabaseManager(MainActivity.this).delete();
-                PreferenceManager.instance(MainActivity.this).clearUserSession();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
+                try {
+                    new DatabaseManager(MainActivity.this).delete();
+                    PreferenceManager.instance(MainActivity.this).clearUserSession();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+                catch (Exception ex)
+                {
+                    String msg = ex.getMessage();
+                    Toast.makeText(getApplicationContext(),msg, Toast.LENGTH_LONG);
+                }
+            }
+        });
 
+
+        findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                  getCallDetails();
+                }
+                catch (Exception ex)
+                {
+                    String msg = ex.getMessage();
+                    Toast.makeText(getApplicationContext(),msg, Toast.LENGTH_LONG);
+                }
+            }
+        });
+
+
+        findViewById(R.id.scan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                   // Toast.makeText(context,PhoneStateReceiver.FolderNames.size(),Toast.LENGTH_LONG);
+                    File rootDir = Environment.getExternalStorageDirectory();
+                    new FolderScanner().execute(rootDir);
+                }
+                catch (Exception ex)
+                {
+                    String msg = ex.getMessage();
+                    Toast.makeText(getApplicationContext(),msg, Toast.LENGTH_LONG);
+                }
             }
         });
 
@@ -74,20 +117,23 @@ CallHelper helper;
   //      Utils.Companion.hideDialog();
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
         Log.e("Check", "onResume: ");
         if (checkPermission()) {
-            if(PhoneStateReceiver.FolderNames.size()==0) {
-                IterateRecursive(Environment.getExternalStorageDirectory());
-                PhoneStateReceiver.FolderNames = folderNames;
-            }
 
-            Toast.makeText(getApplicationContext(), "Permission already granted", Toast.LENGTH_LONG).show();
+            if(PhoneStateReceiver.FolderNames.size()==0)
+                Toast.makeText(getApplicationContext(),"Please click on Scan Directory to find Recording Directory", Toast.LENGTH_LONG);
             if (checkResume == false) {
                 getCallDetails();
             }
+
+            Intent uploadIntent = new Intent(this.getApplicationContext(), UploadIntentService.class);
+            this.getApplicationContext().startService(uploadIntent);
+
         }
     }
 
@@ -175,9 +221,8 @@ CallHelper helper;
 
 
     private void getCallDetails() {
-
-
-        apiProvider = WebServiceProvider.Companion.getRetrofit().create(WebServiceProvider.class);
+        Utils.Companion.showDialog(context,"Fetching Content,\r\n Please Wait...","Refreshing");
+          apiProvider = WebServiceProvider.Companion.getRetrofit().create(WebServiceProvider.class);
 
         apiProvider.getCallDetails(PreferenceManager.instance(this).get(PreferenceManager.USER_ID, null))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -198,6 +243,7 @@ CallHelper helper;
 
                             Utils.Companion.toast(loginResponse.getMessage(), MainActivity.this);
                         }
+                        Utils.Companion.hideDialog();
 
                     }
 
@@ -212,8 +258,9 @@ CallHelper helper;
     }
 
 
-    private void IterateRecursive(File root)
+    private void IterateRecursive(File root,ArrayList<String> names)
     {
+
         try {
 
             File[] list = root.listFiles();
@@ -221,8 +268,8 @@ CallHelper helper;
             for (File f : list) {
                 if (f.isDirectory()) {
                     if (!f.getName().startsWith(".") || !f.getName().startsWith("com.")) {
-                        folderNames.add(f.getAbsolutePath());
-                        IterateRecursive(f);
+                        names.add(f.getAbsolutePath());
+                        IterateRecursive(f,names);
                     }
                 }
             }
@@ -231,6 +278,7 @@ CallHelper helper;
         {
             Toast.makeText(this.getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG);
         }
+
     }
 
 
@@ -266,4 +314,28 @@ CallHelper helper;
 
     }
 
+    public  class FolderScanner extends AsyncTask<File,String,ArrayList<String>>
+    {
+        @Override
+        protected void onPreExecute() {
+            Utils.Companion.showDialog(context,"Scanning Directories,\r\n Please Wait...","Progress");
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> strings) {
+            PhoneStateReceiver.FolderNames = strings;
+            PhoneStateReceiver.StopWatching();
+            Utils.Companion.hideDialog();
+
+        }
+
+        @Override
+        protected ArrayList<String> doInBackground(File... strings) {
+            File rootDir = strings[0];
+
+            ArrayList<String> files = new ArrayList<>();
+            IterateRecursive(rootDir,files);
+            return  files;
+        }
+    }
 }

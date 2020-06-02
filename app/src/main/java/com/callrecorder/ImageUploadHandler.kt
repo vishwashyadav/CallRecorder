@@ -2,6 +2,7 @@ package com.callrecorder
 
 import android.content.Context
 import android.os.Environment
+import android.text.TextUtils
 import com.callrecorder.bean.UploadResponseBean
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -55,6 +56,11 @@ try {
                         if (t.status) {
 
                             listener.onUpload(t.fileUrl, requestCode);
+                            if(!TextUtils.isEmpty(t.fileUrl))
+                            {
+                                //new_file.delete();
+                                destFile.delete();
+                            }
                         } else {
                             listener.onFailed("Something went wrong, please try again!")
                         }

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.callrecorder.PhoneStateReceiver;
+import com.callrecorder.PreferenceManager;
 
 import java.io.File;
 
@@ -37,11 +38,13 @@ this.context = context;
             case FileObserver.CREATE:
                 if(PhoneStateReceiver.LastCallDetails != null && PhoneStateReceiver.LastCallDetails.IsCurrentCall)
                 {
+                    PhoneStateReceiver.RecordingDirectory = rootPath;
                     String tmPath=path;
                     if(tmPath.startsWith("."))
                         tmPath = path.substring(1);
                     String filePath = rootPath+tmPath;
-                    PhoneStateReceiver.LastCallDetails.setFilePath(filePath);
+                    PreferenceManager pref = PreferenceManager.instance(context);
+                    pref.set(PhoneStateReceiver.RecordingDirectoryTag,rootPath);
                 }
 
                 break;

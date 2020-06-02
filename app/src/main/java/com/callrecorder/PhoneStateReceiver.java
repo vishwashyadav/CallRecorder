@@ -10,12 +10,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.CallLog;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.callrecorder.utils.CallHelper;
+import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +35,12 @@ public class PhoneStateReceiver extends BroadcastReceiver {
     public static String phoneNumber;
     public static String name;
     public  static  CallDetails LastCallDetails;
+    static  final  String FilePath="FilePath";
+    public static  final  String RecordingDirectoryTag="RecordingDirectory";
+    public static  final  String LastRecordingFileNameTag="LastRecordingFileName";
+    public static String RecordingDirectory;
+    public static String LastRecordingFileName;
+    public  static  boolean IsStartedWatching;
     @Override
     public void onReceive(Context context, Intent intent) {
         PreferenceManager pref = PreferenceManager.instance(context);
@@ -44,7 +55,6 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 Bundle extras = intent.getExtras();
                 String state = extras.getString(TelephonyManager.EXTRA_STATE);
                 Log.d(TAG, " onReceive: " + state);
-                Toast.makeText(context, "Call detected(Incoming/Outgoing) " + state, Toast.LENGTH_SHORT).show();
 
                 if (extras != null) {
                        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
@@ -121,30 +131,38 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
         if (pref.get(PreferenceManager.numOfCalls, 1) == 1) {
 
-            LastCallDetails = new CallDetails();
-            LastCallDetails.IsCurrentCall=true;
 
-            Intent reivToServ = new Intent(context, RecorderService.class);
-            String time = new CommonMethods().getTIme();
+            if(LastCallDetails==null || !LastCallDetails.IsCurrentCall) {
+                Toast.makeText(context, "Call detected(Incoming/Outgoing) " + state, Toast.LENGTH_SHORT).show();
 
-            String fileName = phoneNumber + "_" + time ;
+                LastCallDetails = new CallDetails();
+                LastCallDetails.IsCurrentCall = true;
 
-            reivToServ.putExtra("number", phoneNumber);
-            reivToServ.putExtra("fileName", fileName);
-            StartWatching(context);
+                Intent reivToServ = new Intent(context, RecorderService.class);
+                String time = new CommonMethods().getTIme();
+
+                String fileName = phoneNumber + "_" + time;
+
+                reivToServ.putExtra("number", phoneNumber);
+                reivToServ.putExtra("fileName", fileName);
+                if(!IsStartedWatching) {
+                    StartWatching(context);
+                    IsStartedWatching=true;
+                }
      /*       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(reivToServ);
             } else {
                 context.startService(reivToServ);
             }*/
 
-            //name=new CommonMethods().getContactName(phoneNumber,context);
+                //name=new CommonMethods().getContactName(phoneNumber,context);
 
-            int serialNumber = pref.get("serialNumData", 1);
-            //new DatabaseManager(context).addCallDetails(new CallDetails(serialNumber, phoneNumber, time, new CommonMethods().getDate()));
-            //recordStarted=true;
-            pref.set("serialNumData", ++serialNumber);
-            pref.set("recordStarted", true);
+                int serialNumber = pref.get("serialNumData", 1);
+                //new DatabaseManager(context).addCallDetails(new CallDetails(serialNumber, phoneNumber, time, new CommonMethods().getDate()));
+                //recordStarted=true;
+                pref.set("serialNumData", ++serialNumber);
+                pref.set("recordStarted", true);
+            }
         }
 
     }
@@ -167,8 +185,9 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         }
     }
 
-    private  void StopWatching()
+    public static   void StopWatching()
     {
+        IsStartedWatching=false;
         for(CallHelper h:WatchList)
         {
             h.stopWatching();
@@ -191,17 +210,33 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
         //    Log.d(TAG1, " Inside to stop recorder " + state);
 
-            Toast.makeText(context, "Status:"+ LastCallDetails.IsCurrentCall, Toast.LENGTH_SHORT).show();
-          //  context.stopService(new Intent(context, RecorderService.class));
+            //  context.stopService(new Intent(context, RecorderService.class));
             if(LastCallDetails.IsCurrentCall) {
              getLastCallDetails(context);
-             Toast.makeText(context, "FilePath:"+ LastCallDetails.getFilePath(), Toast.LENGTH_SHORT).show();
+                //if(TextUtils.isEmpty(LastCallDetails.getFilePath()))
+                {
+
+                    LastRecordingFileName = pref.get(LastRecordingFileNameTag, "");
+                    RecordingDirectory = pref.get(RecordingDirectoryTag, "");
+                    if (!TextUtils.isEmpty(RecordingDirectory)) {
+                        String fileName = GetLastFile(context, RecordingDirectory, LastRecordingFileName);
+                        if (!TextUtils.isEmpty(fileName) && !IsFileAccessed(context, pref, fileName)) {
+                            pref.set(LastRecordingFileNameTag,fileName);
+                            LastCallDetails.setFilePath(RecordingDirectory + fileName);
+                            SaveAccessedFilePathToPref(context, pref, fileName);
+                        } else
+                            LastCallDetails.setFilePath(null);
+                    }
+                }
+
+
+                Toast.makeText(context, "FilePath:"+ LastCallDetails.getFilePath(), Toast.LENGTH_SHORT).show();
                 new DatabaseManager(context).addCallDetails(LastCallDetails);
                 pref.set("recordStarted", false);
 
                 Intent uploadIntent = new Intent(context, UploadIntentService.class);
                 context.startService(uploadIntent);
-                StopWatching();
+                LastCallDetails.IsCurrentCall=false;
             }
 
 
@@ -209,5 +244,60 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
 
 
+    }
+
+    private void SaveAccessedFilePathToPref(Context con, PreferenceManager pref, String s)
+    {
+        Gson gson = new Gson();
+        List<String> items = new ArrayList<>();
+        String savedData = pref.get(FilePath,"");
+        if(TextUtils.isEmpty(savedData))
+        {
+            items.add(s);
+        }
+        else
+        {
+            String[] text = gson.fromJson(savedData, String[].class);
+            items = new ArrayList<>( Arrays.asList(text));
+            if(items.size()>20)
+               items.removeAll(items.subList(0,19));
+
+            items.add(s);
+        }
+
+        String jsonData = gson.toJson(items);
+        pref.set(FilePath, jsonData);
+    }
+
+    private  boolean IsFileAccessed(Context con, PreferenceManager pref, String s)
+    {
+        Gson gson = new Gson();
+        String savedData = pref.get(FilePath,"");
+        String[] text = gson.fromJson(savedData, String[].class);
+        if(text!=null) {
+            List<String> items = Arrays.asList(text);
+            return items.contains(s);
+        }
+        else
+            return false;
+    }
+
+    private String GetLastFile(Context con,String root, String lastAccessFilePath)
+    {
+
+        if(!TextUtils.isEmpty(root))
+        {
+            File directory = new File(root);
+            File[] files = directory.listFiles();
+            if(files.length>0) {
+                Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+                String name = files[0].getName();
+                if(name != lastAccessFilePath && (name.endsWith(".amr") || name.endsWith(".mp4") || name.endsWith(".m4a")))
+                    return  name;
+            }
+
+        }
+
+        return  null;
     }
 }
