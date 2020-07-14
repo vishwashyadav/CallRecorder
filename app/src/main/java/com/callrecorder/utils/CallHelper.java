@@ -31,7 +31,7 @@ this.context = context;
 
     public void onEvent(int event, String path) {
 
-        if((path==null || path=="") || (!path.endsWith(".amr") && !path.endsWith(".mp4") && !path.endsWith(".m4a")))
+        if((path==null || path=="") || (!path.endsWith(".amr") && !path.endsWith(".mp4") && !path.endsWith(".mp3") && !path.endsWith(".m4a")))
             return;
 
         switch(event){

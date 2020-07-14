@@ -111,9 +111,17 @@ class Utils {
             hours = seconds / 3600;
             minutes = seconds % 3600 / 60;
             val seconds_output = seconds % 3600 % 60
-            return (minutes.toString()+":"+minutes+":"+seconds_output);
+            return (appendZero(hours.toString())+":"+ appendZero(minutes.toString())+":"+ appendZero(seconds_output.toString()));
         }
 
+        fun appendZero(v:String) : String
+        {
+            if(v.length==1)
+                return "0"+v;
+            else
+                return  v;
+
+        }
         fun DateToString(date:Date):String
         {
             val pattern = "yyyy-MM-dd HH:mm:ss";
@@ -122,6 +130,15 @@ class Utils {
             val dateStr = simpleDateFormat.format(date);
             return dateStr;
         }
+
+    fun ToDate(date:String):Date
+    {
+        val pattern = "yyyy-MM-dd HH:mm:ss";
+        val simpleDateFormat = SimpleDateFormat(pattern);
+
+        val date1 = SimpleDateFormat(pattern).parse(date)
+        return date1;
+    }
     }
 
 

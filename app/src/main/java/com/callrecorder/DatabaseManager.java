@@ -30,6 +30,7 @@ try {
     values.put(DatabaseHandler.FILE_PATH, callDetails.getFilePath());
     values.put(DatabaseHandler.CALL_DURATION, callDetails.Duration);
     values.put(DatabaseHandler.CALL_TYPE, callDetails.CallType);
+    values.put(DatabaseHandler.External_ID, callDetails.ExternalID);
 
     sqLiteDatabase.insert(DatabaseHandler.TABLE_RECORD, null, values);
 }
@@ -59,6 +60,7 @@ catch (Exception ex)
                 callDetails.setFilePath(cursor.getString(5));
                 callDetails.Duration= cursor.getString(6);
                 callDetails.CallType = cursor.getString(7);
+                callDetails.ExternalID = cursor.getString(8);
                 recordList.add(callDetails);
             } while (cursor.moveToNext());
         }

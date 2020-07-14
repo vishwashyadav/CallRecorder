@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.callrecorder.bean.UploadResponseBean;
+import com.callrecorder.bean.UserCallDetailsList;
 import com.callrecorder.login.LoginResponseBean;
 import com.google.gson.JsonObject;
 
@@ -22,6 +24,8 @@ import java.util.List;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 public class UploadIntentService extends IntentService {
@@ -44,8 +48,39 @@ public class UploadIntentService extends IntentService {
 
         for (CallDetails bean : callDetailsList) {
             if (!TextUtils.isEmpty(bean.getFlag()) && bean.getFlag().equalsIgnoreCase("false")) {
-                uploadFile(bean);
+               uploadFile(bean);
             }
+        }
+    }
+
+    public void SaveCallDetails(List<CallDetails> callDetails) {
+        apiProvider = WebServiceProvider.Companion.getRetrofit().create(WebServiceProvider.class);
+
+        for (CallDetails bean : callDetails) {
+            if (!TextUtils.isEmpty(bean.getFlag()) && bean.getFlag().equalsIgnoreCase("false")) {
+                String url = "";
+                if (!TextUtils.isEmpty(bean.getFilePath())) {
+                    String path = bean.getFilePath();
+                    String extension = bean.getFilePath().substring(path.lastIndexOf("."));
+                    String fileName = bean.getNum() + "_" + bean.getDate1() + extension;
+                    String destPath = Environment.getExternalStorageDirectory() + "/My Records/Upload/" + fileName;
+                    //  Log.d("path", "onClick: " + path);
+                    //Log.d("upload status", "upload: " + bean.getFlag());
+                    UploadResponseBean result = null;
+                    if (!TextUtils.isEmpty(bean.getFlag()) && bean.getFlag().equalsIgnoreCase("false")) {
+                        result = ImageUploadHandler.Companion.uploadImageToServerSync(100, path, fileName, destPath, this);
+
+                    }
+                    if (result != null) {
+                        url = result.getFileUrl();
+                        updateDetailsSync(url, bean);
+                    }
+                }
+                else{
+                    updateDetailsSync("", bean);
+                }
+            }
+
         }
     }
 
@@ -73,7 +108,7 @@ public class UploadIntentService extends IntentService {
 
                     @Override
                     public void onFailed(@org.jetbrains.annotations.Nullable String error) {
-
+                        updateDetails("", bean);
                     }
                 });
             } else {
@@ -94,6 +129,7 @@ public class UploadIntentService extends IntentService {
         user.addProperty("callTime", bean.getDate1());
         user.addProperty("url", url);
         user.addProperty("updatedBy", PreferenceManager.instance(this).get(PreferenceManager.USER_NAME, null));
+        user.addProperty("ExternalID", bean.ExternalID);
 
 
         apiProvider = WebServiceProvider.Companion.getRetrofit().create(WebServiceProvider.class);
@@ -118,6 +154,33 @@ public class UploadIntentService extends IntentService {
                     }
                 });
 
+
+    }
+
+    private void updateDetailsSync(String url, CallDetails bean) {
+        try{
+            JsonObject user = new JsonObject();
+
+            user.addProperty("userId", PreferenceManager.instance(this).get(PreferenceManager.USER_ID, null));
+            user.addProperty("contactName", "abc");
+            user.addProperty("formNum", PreferenceManager.instance(this).get(PreferenceManager.USER_MOBILE_NUMBER, null));
+            user.addProperty("toNum", bean.getNum());
+            user.addProperty("callType", bean.CallType);
+            user.addProperty("callDuration", bean.Duration);
+            user.addProperty("callTime", bean.getDate1());
+            user.addProperty("url", url);
+            user.addProperty("updatedBy", PreferenceManager.instance(this).get(PreferenceManager.USER_NAME, null));
+            user.addProperty("ExternalID", bean.ExternalID);
+
+
+            apiProvider = WebServiceProvider.Companion.getRetrofit().create(WebServiceProvider.class);
+            Call<LoginResponseBean> result = apiProvider.updateDetailsSync(user);
+            Response<LoginResponseBean> resultBean = result.execute();
+        }
+        catch (IOException ex)
+        {
+
+        }
 
     }
 

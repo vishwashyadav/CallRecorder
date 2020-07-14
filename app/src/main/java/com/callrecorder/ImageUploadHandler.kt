@@ -7,9 +7,7 @@ import com.callrecorder.bean.UploadResponseBean
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -59,7 +57,7 @@ try {
                             if(!TextUtils.isEmpty(t.fileUrl))
                             {
                                 //new_file.delete();
-                                destFile.delete();
+                               // destFile.delete();
                             }
                         } else {
                             listener.onFailed("Something went wrong, please try again!")
@@ -88,6 +86,41 @@ catch (ex:java.lang.Exception)
 {
     var s = ex.message;
 }
+        }
+
+
+        fun uploadImageToServerSync(requestCode: Int, imagePath: String, imageName: String,destpath: String
+                                , context: Context):UploadResponseBean? {
+            try {
+
+
+                var isImageType: Boolean = false
+                Logger.e("file path", imagePath)
+                var new_file = File(imagePath)
+
+                var destFile = copyFileOrDirectory(imagePath, destpath);
+
+                if (destFile!!.exists()) {
+
+                    //Logger.e("file Size:", "" + (destFile.length() / 1024))
+
+                    val reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), destFile)
+                    val nameReq = RequestBody.create(MediaType.parse("text/plain"), imageName)
+
+                    val body = MultipartBody.Part.createFormData("file", "test", reqFile)
+
+                    var provider1: WebServiceProvider? = WebServiceProvider.retrofitForMedia.create(WebServiceProvider::class.java)
+                    var result = provider1?.uploadImageSync(body,nameReq);
+                    var bean =result?.execute();
+                    return bean?.body();
+
+                }
+            }
+            catch (ex:java.lang.Exception)
+            {
+
+            }
+            return null;
         }
 
         fun copyFileOrDirectory(srcDir: String, dstDir: String):File? {

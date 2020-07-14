@@ -17,6 +17,7 @@ public class PreferenceManager {
     public static final String LOGIN_STATUS = "LOGIN_STATUS";
     public static final String switchOn = "switchOn";
     public static final String numOfCalls = "numOfCalls";
+    public static final String LastCallID = "LastCallID";
     public static final String pauseStateVLC = "pauseStateVLC";
 
 

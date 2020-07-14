@@ -32,8 +32,13 @@ public class UserCallDetailsList implements Serializable {
     @SerializedName("url")
     @Expose
     private String url;
+    @SerializedName("externalId")
+    @Expose
+    private String externalID;
     private final static long serialVersionUID = -7798949486461803778L;
-
+    public boolean IsUploaded;
+    public boolean IsDeleted;
+    public boolean IsFileUploaded;
     public long getId() {
         return id;
     }
@@ -42,16 +47,30 @@ public class UserCallDetailsList implements Serializable {
         this.id = id;
     }
 
+    public String getExternalId() {
+        return externalID;
+    }
+
+    public void setExternalId(String id) {
+        this.externalID = id;
+    }
+
     public String getContactName() {
         return contactName;
     }
     public int getCallDuration() {
         return callDuration;
     }
+
+    public void setCallDuration(int duration) {
+        this.callDuration = duration;
+    }
     public String getCallDate() {
         return callDate;
     }
-
+    public void setCallDate(String date) {
+        this.callDate = date;
+    }
     public void setContactName(String contactName) {
         this.contactName = contactName;
     }

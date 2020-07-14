@@ -16,6 +16,7 @@ public class CallDetails {
     private  String filePath;
     private String flag;
     public String CallType;
+    public String ExternalID;
     public String Duration;
     public  boolean IsCurrentCall;
     public CallDetails() {

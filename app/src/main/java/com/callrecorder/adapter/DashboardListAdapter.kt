@@ -47,14 +47,31 @@ class DashboardListAdapter(private val mContext: Context, private val dataList: 
         else
             holder.imgCallType.setImageResource(R.drawable.incomingcall);
 
-        if (TextUtils.isEmpty(bean.url)) {
-            holder.tvDelete.setImageResource(0);
-        } else {
+        if (!bean.IsUploaded)
+            {
+                holder.txtStatus.text = "";
 
-            holder.tvDelete.visibility = View.VISIBLE
+        } else if( bean.IsDeleted)
+        {
+            holder.txtStatus.text="DELETED";
+        }
+        else if(bean.IsUploaded && !bean.IsFileUploaded){
+
+            holder.txtStatus.text= "PENDING";
+        }
+        else if(bean.IsUploaded && bean.IsFileUploaded)
+        {
+            holder.txtStatus.text= "UPLOADED";
         }
 
-        holder.tvDelete.setOnClickListener(object : View.OnClickListener {
+        if (!bean.IsFileUploaded) {
+            holder.tvRecordingFileUpload.visibility = View.GONE;
+        } else {
+
+            holder.tvRecordingFileUpload.visibility = View.VISIBLE
+        }
+
+        holder.tvRecordingFileUpload.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 StickyDialog(mContext, "Go Back", "Do you want delete this file", "Yes", StickyDialog.Okay {
                     listener.deleteItem(dataList[position]);
@@ -75,7 +92,8 @@ class DashboardListAdapter(private val mContext: Context, private val dataList: 
         var tvTitle: TextView = itemView.findViewById(R.id.txtContactName)
         var tvDesc: TextView = itemView.findViewById(R.id.txtCallDate)
         var txtDuration: TextView = itemView.findViewById(R.id.txtDuration)
-        var tvDelete: ImageView = itemView.findViewById(R.id.imgDelete)
+        var tvRecordingFileUpload: ImageView = itemView.findViewById(R.id.imgFileUpload)
+        var txtStatus: TextView = itemView.findViewById(R.id.txtStatus)
         var imgCallType: ImageView = itemView.findViewById(R.id.imgCallType)
 
         var tvLayout: RelativeLayout = itemView.findViewById(R.id.layout)

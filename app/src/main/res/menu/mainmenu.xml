@@ -2,9 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/mySwitch"
-        android:title=""
+        android:id="@+id/refresh"
+        android:icon="@drawable/ic_refresh"
+        android:title="Refresh"
         android:actionLayout="@layout/switch_layout"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/save"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="Save"
+        android:actionLayout="@layout/switch_layout"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/setRecordingPath"
+       android:title="Settings"
+        android:actionLayout="@layout/switch_layout"
+        app:showAsAction="never"/>
+
 
 </menu>

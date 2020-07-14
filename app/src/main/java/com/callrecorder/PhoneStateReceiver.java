@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.CallLog;
+import android.telecom.Call;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -86,6 +87,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
             int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
             int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+            int id_index = managedCursor.getColumnIndex(CallLog.Calls._ID);
             int incomingtype = managedCursor.getColumnIndex(String.valueOf(CallLog.Calls.INCOMING_TYPE));
 
                 while (managedCursor.moveToNext()) {
@@ -102,6 +104,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     Date callDayTime = new Date(Long.valueOf(callDate));
 
                     String callDuration = managedCursor.getString(duration);
+                    LastCallDetails.ExternalID = managedCursor.getString(id_index);
                     LastCallDetails.CallType = callType;
                     LastCallDetails.setDate1(Utils.Companion.DateToString(callDayTime));
                     LastCallDetails.Duration = callDuration;
@@ -204,9 +207,10 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         Log.d(TAG1, " Inside " + state);
         recordStarted = pref.get("recordStarted", false);
         Log.d(TAG1, " recordStarted in idle :" + recordStarted);
+        Toast.makeText(context, "Number of Calls : "+l+" and IsRecordingStarted="+recordStarted, Toast.LENGTH_SHORT).show();
         if (recordStarted && l == 0)
         {
-            Toast.makeText(context, "Call Ended", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Call Ended", Toast.LENGTH_SHORT).show();
 
         //    Log.d(TAG1, " Inside to stop recorder " + state);
 
@@ -230,7 +234,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 }
 
 
-                Toast.makeText(context, "FilePath:"+ LastCallDetails.getFilePath(), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context, "FilePath:"+ LastCallDetails.getFilePath(), Toast.LENGTH_SHORT).show();
                 new DatabaseManager(context).addCallDetails(LastCallDetails);
                 pref.set("recordStarted", false);
 
@@ -292,7 +296,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             if(files.length>0) {
                 Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
                 String name = files[0].getName();
-                if(name != lastAccessFilePath && (name.endsWith(".amr") || name.endsWith(".mp4") || name.endsWith(".m4a")))
+                if(name != lastAccessFilePath && (name.endsWith(".amr") || name.endsWith(".mp4") || name.endsWith(".mp3") || name.endsWith(".m4a")))
                     return  name;
             }
 
